@@ -1,0 +1,30 @@
+{
+  "name": "redblue_backend",
+  "version": "1.0.0",
+  "description": "Aici este tot ce tine de partea de backend din proiectul RedBlue-Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IoanaBozonc/redblue_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IoanaBozonc/redblue_backend/issues"
+  },
+  "homepage": "https://github.com/IoanaBozonc/redblue_backend#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "mongoose": "^9.13.1"
+  }
+}
