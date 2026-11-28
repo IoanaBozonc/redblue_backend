@@ -23,7 +23,7 @@ function generateNineCharCode() {
   return result;
 }
 
-// Verifica sa nu existe alt joc ACTIV cu acelasi cod
+// Verifica sa nu existe alt joc activ cu acelasi cod
 async function generateUniqueActiveCode() {
   let code;
   let exists = true;
@@ -41,16 +41,16 @@ async function generateUniqueActiveCode() {
 }
 
 app.get('/', (req, res) => {
-  res.json({ message: 'RedBlue Backend mergeeeee!' });
+  res.json({ message: 'Serverul RedBlue functioneaza!' });
 });
 
-// 1. Create new game
+// 1. Creare joc nou
 app.post('/api/games', async (req, res) => {
   try {
     const { player1Name } = req.body;
 
     if (!player1Name || !player1Name.trim()) {
-      return res.status(400).json({ message: 'Player 1 name is required.' });
+      return res.status(400).json({ message: 'Numele jucatorului 1 este obligatoriu.' });
     }
 
     const code = await generateUniqueActiveCode();
@@ -66,17 +66,17 @@ app.post('/api/games', async (req, res) => {
 
     return res.status(201).json(newGame);
   } catch (err) {
-    return res.status(500).json({ message: 'Error creating game', error: err.message });
+    return res.status(500).json({ message: 'Eroare la crearea jocului', error: err.message });
   }
 });
 
-// 2. Join game
+// 2. Intrare intr-un joc existent
 app.post('/api/games/join', async (req, res) => {
   try {
     const { code, player2Name } = req.body;
 
     if (!code || !player2Name || !player2Name.trim()) {
-      return res.status(400).json({ success: false, message: 'Code and player 2 name are required.' });
+      return res.status(400).json({ success: false, message: 'Codul si numele jucatorului 2 sunt obligatorii.' });
     }
 
     const normalizedCode = code.trim().toUpperCase();
@@ -87,11 +87,11 @@ app.post('/api/games/join', async (req, res) => {
     });
 
     if (!game) {
-      return res.status(404).json({ success: false, message: 'Active game not found or already finalized.' });
+      return res.status(404).json({ success: false, message: 'Jocul activ nu a fost gasit sau este deja finalizat.' });
     }
 
     if (game.player2Name) {
-      return res.status(409).json({ success: false, message: 'Game already has two players.' });
+      return res.status(409).json({ success: false, message: 'Jocul are deja doi jucatori.' });
     }
 
     game.player2Name = player2Name.trim();
@@ -100,18 +100,18 @@ app.post('/api/games/join', async (req, res) => {
 
     return res.status(200).json({ success: true, game });
   } catch (err) {
-    return res.status(500).json({ success: false, message: 'Error joining game', error: err.message });
+    return res.status(500).json({ success: false, message: 'Eroare la intrarea in joc', error: err.message });
   }
 });
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Conectat la MongoDB');
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Serverul ruleaza pe http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
+    console.error('Eroare la conectarea cu MongoDB:', err.message);
   });
