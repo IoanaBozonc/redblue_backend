@@ -104,6 +104,54 @@ app.post('/api/games/join', async (req, res) => {
   }
 });
 
+// 3. Lista de jocuri (cu paginare si filtrare dupa status sau cod)
+app.get('/api/games', async (req, res) => {
+  try {
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const pageSize = Math.max(parseInt(req.query.pageSize, 10) || 10, 1);
+    const { status, code } = req.query;
+
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+    if (code) {
+      filter.code = code.trim().toUpperCase();
+    }
+
+    const totalGames = await Game.countDocuments(filter);
+    const games = await Game.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    return res.status(200).json({
+      page,
+      pageSize,
+      totalGames,
+      totalPages: Math.ceil(totalGames / pageSize),
+      games,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: 'Eroare la preluarea listei de jocuri', error: err.message });
+  }
+});
+
+// 4. Detalii pentru un singur joc (dupa GUID)
+app.get('/api/games/:guid', async (req, res) => {
+  try {
+    const game = await Game.findOne({ guid: req.params.guid });
+
+    if (!game) {
+      return res.status(404).json({ message: 'Jocul nu a fost gasit.' });
+    }
+
+    return res.status(200).json(game);
+  } catch (err) {
+    return res.status(500).json({ message: 'Eroare la preluarea detaliilor jocului', error: err.message });
+  }
+});
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
